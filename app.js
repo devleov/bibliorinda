@@ -28,11 +28,11 @@ app.use(express.json());
 
 function loginProtection(req, res, next) {
     if (login.status == "off") {
-        res.redirect("/login")
+        res.redirect("/login");
     } else {
-        next()
-    }
-}
+        next();
+    };
+};
 
 app.get("/login", (req, res) => {
     res.render("login", {
@@ -40,7 +40,7 @@ app.get("/login", (req, res) => {
         icon: "/img/login-icon.svg",
         css: "/css/pages/login/style.css",
         js: "/js/pages/login/script.js",
-    })
+    });
 });
 
 app.get("/dashboard", loginProtection, (req, res) => {
@@ -50,38 +50,38 @@ app.get("/dashboard", loginProtection, (req, res) => {
         css: "/css/pages/dashboard/style.css",
         js: "/js/pages/dashboard/script.js",
         name: login.name,
-    })
-})
+    });
+});
 
 app.post("/logout", (req, res) => {
     try {
         login.status = "off";
         
-        res.json({ status: "success"})
+        res.json({ status: "success"});
     } catch(err) {
-        res.json({ status: "failed", err: err })
-    }
-})
+        res.json({ status: "failed", err: err });
+    };
+});
 
 app.post("/login/acess", (req, res) => {
     const { email, password } = req.body;
     
     if (login.status == "on") {
-        res.json({ status: "already-logged-in" })
+        res.json({ status: "already-logged-in" });
 
         return;
-    }
+    };
 
     /* Mudando a variável de controle de login */
-    login.status = "on"
+    login.status = "on";
 
     if (email == login.email && password == login.password) {
-        res.json({ status: "success" })
+        res.json({ status: "success" });
     } else {
-        res.json({ status: "failed" })
-    }
-})
+        res.json({ status: "failed" });
+    };
+});
 
 app.listen(port, () => {
-    console.log("Servidor rodando na porta: " + port)
+    console.log("Servidor rodando na porta: " + port);
 });

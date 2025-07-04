@@ -1,16 +1,18 @@
-// Parâmetros:
-// o elemento que vai ser preenchido (box) 
-// o elemento que vai pegar o conteúdo para a filtragem (input)
-// o elemento de aviso (warn)
+/* Parâmetros:
+    O elemento que vai ser preenchido (box) 
+    O elemento que vai pegar o conteúdo para a filtragem (input)
+    O elemento de aviso (warn)
+*/
 
-function searchBook(box, input, warn) {
+async function searchBook(box, input, warn) {
     let text = "";
+
     $(`#${box}`).html("");
 
     const search = removeCaracter($(`#${input}`).val().toLowerCase());
 
-    const data = livros.filter((element, index) => {
-        return removeCaracter(element.name.toLowerCase()).includes(search) || removeCaracter(element.author.toLowerCase()).includes(search) || removeCaracter(element.category.toLowerCase()).includes(search) || removeCaracter(element.shelf.toLowerCase()).includes(search)
+    const data = cacheBooks.filter((element, index) => {
+        return removeCaracter(element.title.toLowerCase()).includes(search) || removeCaracter(element.author.toLowerCase()).includes(search) || removeCaracter(element.category.toLowerCase()).includes(search) || removeCaracter(element.shelf.toLowerCase()).includes(search)
     }).slice(0, 10)
 
     if (data.length == 0) {
@@ -28,7 +30,7 @@ function searchBook(box, input, warn) {
             <tr>
                 <td>${element.id}</td>
                 <td>${element.shelf}</td>
-                <td>${element.name}</td>
+                <td>${element.title}</td>
                 <td>${element.category}</td>
                 <td>${element.author}</td>
 
@@ -46,7 +48,7 @@ function searchBook(box, input, warn) {
             <tr>
                 <td>${element.id}</td>
                 <td>${element.shelf}</td>
-                <td>${element.name}</td>
+                <td>${element.title}</td>
                 <td>${element.category}</td>
                 <td>${element.author}</td>
             </tr>

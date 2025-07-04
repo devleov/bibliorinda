@@ -1,0 +1,19 @@
+{
+  "name": "sistema-de-biblioteca",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Léo Vitor",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
