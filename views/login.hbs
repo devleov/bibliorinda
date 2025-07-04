@@ -1,33 +1,22 @@
-<content class="bg-dark d-flex justify-content-center align-items-center position-relative" style="height: 100vh;">
+<content class="d-flex justify-content-center align-items-center position-relative" style="background-color: #b2e6b2; height: 100vh;">
 
-    <div class="container text-dark bg-light p-4 d-flex flex-column justify-content-between align-items-start mx-4 rounded"
-        style="min-height: 450px; max-width: 550px;">
+    <div class="container text-dark p-4 d-flex flex-column justify-content-between align-items-start mx-4 rounded shadow-lg"
+        style="min-height: 450px; max-width: 480px; background-color: rgba(255, 255, 255, 0.462)">
         <div class="d-flex flex-column align-items-center w-100 justify-content-between mb-4">
-            <h1 class="mx-auto fw-bold fs-1 mt-2" style="letter-spacing: 10px;">BIBLIORINDA</h1>
-
-            <div class="bx-text-login position-relative w-100 d-flex justify-content-center">
-                <h2 class="text-danger d-flex fw-bold">Faça login</h2>
-            </div>
+            <img src="/img/logo-bibliorinda.png" style="height: 200px;" alt="logo-bibliorinda"> <p style="font-family: Poppins;" class="fw-bold fs-4">LOGIN:</p>
         </div>
 
         <div class="w-100 d-flex flex-column gap-3 mb-3">
-            <div>
-                <label class="label-login form-label fs-5" for="email">E-mail:</label>
                 <input required autocomplete="off" id="email" name="email"
                     class="form-control form-control-lg input-login" type="email"
                     placeholder="Insira seu e-mail"></input>
-            </div>
 
-            <div class="mb-3">
-                <label class="label-login form-label fs-5" for="password">Senha:</label>
                 <input required id="password" name="password" class="form-control form-control-lg input-login"
                     type="password" placeholder="Insira sua senha">
-            </div>
 
             <button type="button" id="btn-login"
-                class="btn-login d-flex align-items-center justify-content-center btn-lg btn mx-auto fw-bold btn-outline-primary"
-                style="max-width: 360px; min-width: 260px;"><img src="/img/login-icon.svg" alt="icone-de-acessar"
-                    class="me-2" height="20px"> Acessar</button>
+                class="btn-login d-flex align-items-center justify-content-center btn-lg btn fw-bold btn-outline-primary width"><img src="/img/login-icon.svg" alt="icone-de-acessar"
+                    class="me-2" height="20px">Acessar</button>
         </div>
     </div>
 
