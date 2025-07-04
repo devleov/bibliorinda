@@ -94,6 +94,8 @@ $("#modal-add input").each((index, element) => {
     });
 })
 
+let intervalWarns;
+
 /* Evento: Adicionar um livro na lista de livros */
 $("#btn-save-book").on("click", async () => {
     /* Obtenção dos dados do modal de adicionar livro */
@@ -134,15 +136,19 @@ $("#btn-save-book").on("click", async () => {
 
     if (!resp.ok) {
         /* Aviso quando não foi possível adicionar o livro */
-        $(".alert").addClass("show")
+        $(".text-alert").html('<i class="fa-solid fa-xmark me-2"></i>' + data.message)
+        
         $(".alert").addClass("alert-danger")
-        $(".text-alert").html('<i class="fa-solid fa-xmark me-2" style="color: red;"></i>' + data.message)
 
-        setTimeout(() => {
+        $(".alert").addClass("show")
+
+        if (intervalWarns) clearTimeout(intervalWarns);
+
+        intervalWarns = setTimeout(() => {
+            $(".text-alert").html("")
             $(".alert").removeClass("show")
             $(".alert").removeClass("alert-danger")
-            $(".text-alert").html("")
-        }, 7000)
+        }, 5000)
 
         /* Removendo todo o conteúdo dos inputs */
         $("#modal-add input").each((index, element) => {
@@ -157,15 +163,17 @@ $("#btn-save-book").on("click", async () => {
     cacheBooks.push({ id, title, author, category, shelf });
 
     /* Aviso após adicionar o livro */
+    $(".text-alert").html('<i class="fa-solid fa-check-circle me-2"></i>' + data.message)
     $(".alert").addClass("alert-success")
     $(".alert").addClass("show")
-    $(".text-alert").html('<i class="fa-solid fa-check-circle me-2" style="color: green;"></i>' + data.message)
 
-    setTimeout(() => {
+    if (intervalWarns) clearTimeout(intervalWarns);
+
+    intervalWarns = setTimeout(() => {
         $(".alert").removeClass("alert-success")
         $(".alert").removeClass("show")
         $(".text-alert").html("")
-    }, 7000)
+    }, 5000)
 
     /* Removendo todo o conteúdo dos inputs */
     $("#modal-add input").each((index, element) => {
