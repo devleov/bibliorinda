@@ -42,67 +42,42 @@ async function login() {
         body: JSON.stringify({ email, password })
     });
 
-    if (resp.ok) {
-        const data = await resp.json();
+    const data = await resp.json();
 
-        if (data.status == "failed") {
-            $(".text-alert").html('<i class="fa-solid fa-xmark me-2"></i>' + "O e-mail ou a senha estão incorretas.");
+    if (data.status == "failed") {
+        $(".text-alert").html('<i class="fa-solid fa-xmark me-2"></i>' + "O e-mail ou a senha estão incorretas.");
 
-            $(".alert").addClass("alert-danger");
-            $(".alert").removeClass("alert-warning");
-            $(".alert").removeClass("alert-success");
+        $(".alert").addClass("alert-danger show");
+        $(".alert").removeClass("alert-warning alert-success");
 
-            $(".alert").addClass("show");
+        $("#email").addClass("is-invalid");
+        $("#password").addClass("is-invalid");
 
-            $("#email").addClass("is-invalid");
-            $("#password").addClass("is-invalid");
+        if (intervalWarns) clearTimeout(intervalWarns);
 
-            if (intervalWarns) clearTimeout(intervalWarns);
+        intervalWarns = setTimeout(() => {
+            $(".text-alert").text("");
+            $(".alert").removeClass("show");
+        }, 5000);
 
-            intervalWarns = setTimeout(() => {
-                $(".text-alert").text("");
-                $(".alert").removeClass("show");
-            }, 5000);
-        } else if (data.status == "already-logged-in") {
-            $(".text-alert").html('<i class="fa-solid fa-triangle-exclamation me-2"></i>' + "Você já está logado.\nIndo para o dashboard..");
+        return;
+    };
 
-            $(".alert").addClass("alert-warning");
-            $(".alert").removeClass("alert-danger");
-            $(".alert").removeClass("alert-success");
+    /* Quando o login é efetuado */
 
-            $(".alert").addClass("show");
+    $(".text-alert").html('<i class="fa-solid fa-check-circle me-2"></i>' + "Login efetuado com sucesso!\nIndo para o dashboard..");
 
-            if (intervalWarns) clearTimeout(intervalWarns);
+    $(".alert").addClass("alert-success show");
+    $(".alert").removeClass("alert-warning alert-danger");
 
-            intervalWarns = setTimeout(() => {
-                $(".text-alert").text("");
-                $(".alert").removeClass("alert-warning");
-                $(".alert").removeClass("show");
+    $("#email").addClass("is-valid");
+    $("#password").addClass("is-valid");
+    $("#email").removeClass("is-invalid");
+    $("#password").removeClass("is-invalid");
 
-                window.location.href = "/dashboard";
-            }, 5000)
-        } else {
-            $(".text-alert").html('<i class="fa-solid fa-check-circle me-2"></i>' + "Login efetuado com sucesso!\nIndo para o dashboard..");
+    if (intervalWarns) clearTimeout(intervalWarns);
 
-            $(".alert").addClass("alert-success");
-            $(".alert").removeClass("alert-warning");
-            $(".alert").removeClass("alert-danger");
-
-            $(".alert").addClass("show");
-
-            $("#email").addClass("is-valid");
-            $("#password").addClass("is-valid");
-            $("#email").removeClass("is-invalid");
-            $("#password").removeClass("is-invalid");
-
-            if (intervalWarns) clearTimeout(intervalWarns);
-
-            intervalWarns = setTimeout(() => {
-                $(".alert-text").text("");
-                $(".alert").removeClass("show");
-
-                window.location.href = "/dashboard";
-            }, 5000);
-        }
-    }
-}
+    intervalWarns = setTimeout(() => {
+        window.location.href = "/dashboard";
+    }, 2000);
+};

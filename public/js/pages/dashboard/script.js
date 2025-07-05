@@ -138,16 +138,13 @@ $("#btn-save-book").on("click", async () => {
         /* Aviso quando não foi possível adicionar o livro */
         $(".text-alert").html('<i class="fa-solid fa-xmark me-2"></i>' + data.message)
         
-        $(".alert").addClass("alert-danger")
-
-        $(".alert").addClass("show")
+        $(".alert").addClass("alert-danger show")
 
         if (intervalWarns) clearTimeout(intervalWarns);
 
         intervalWarns = setTimeout(() => {
             $(".text-alert").html("")
-            $(".alert").removeClass("show")
-            $(".alert").removeClass("alert-danger")
+            $(".alert").removeClass("alert-danger show")
         }, 5000)
 
         /* Removendo todo o conteúdo dos inputs */
@@ -164,14 +161,12 @@ $("#btn-save-book").on("click", async () => {
 
     /* Aviso após adicionar o livro */
     $(".text-alert").html('<i class="fa-solid fa-check-circle me-2"></i>' + data.message)
-    $(".alert").addClass("alert-success")
-    $(".alert").addClass("show")
+    $(".alert").addClass("alert-success show")
 
     if (intervalWarns) clearTimeout(intervalWarns);
 
     intervalWarns = setTimeout(() => {
-        $(".alert").removeClass("alert-success")
-        $(".alert").removeClass("show")
+        $(".alert").removeClass("alert-success show")
         $(".text-alert").html("")
     }, 5000)
 

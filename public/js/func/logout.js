@@ -6,8 +6,18 @@ async function logout() {
     const data = await resp.json();
 
     if (data.status == "success") {
-        window.location.href = "/login"
+        $(".alert").addClass("alert-success show")
+        $(".text-alert").html('<i class="fa-solid fa-check-circle me-2"></i>' + data.message)
+
+        if (intervalWarns) clearTimeout(intervalWarns);
+
+        intervalWarns = setTimeout(() => {
+            window.location.href = "/login";
+        }, 2000)
     } else {
-        console.log(data.status, data.err)
+        $(".alert").addClass("alert-danger show")
+        $(".text-alert").html('<i class="fa-solid fa-xmark me-2"></i>' + data.message)
+
+        console.log(data.message + ":" + " " + data.err)
     }
 }
