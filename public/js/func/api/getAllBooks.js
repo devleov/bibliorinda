@@ -1,9 +1,14 @@
 /* Requisição GET para pegar a lista de livros da API Bibliorinda */
 async function getAllBooks() {
-    const url = "https://api-bibliorinda.onrender.com/findAllBooks"; /* URL da rota `findAllBooks` */
+    const url = "http://localhost:8081/findAllBooks"; /* URL da rota `findAllBooks` */
     const resp = await fetch(url); /* Obtendo a resposta */
-    const data = resp.json(); /* Convertendo o corpo para JSON */
+    const { data, idNextBook } = await resp.json(); /* Convertendo o corpo para JSON */
 
+    /* Se o banco estiver vazio não dá para saber qual vai ser o próximo índice só depois que adicionar um livro, como eu poderia saber o próximo índice do banco sem ter existência de registros na tabela? */
+
+    /* Índice do próximo item do banco de dados */
+    idCacheBooks = idNextBook;
+    
     return data;
 };
 

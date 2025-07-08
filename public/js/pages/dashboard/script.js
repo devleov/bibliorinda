@@ -1,10 +1,12 @@
 let cacheBooks = [];
+let idCacheBooks = 0;
 
 /* Função: Carregar a lista de livros */
-loadList();
+loadList("warn-search");
 
 /* Função: Atribuir ao `cacheBooks` a lista de livros */
 (async () => {
+    console.log("uai")
     await getAllBooks()
 });
 
@@ -47,6 +49,22 @@ $("#btn-trash-books").on("click", async () => {
         intervalWarns = setTimeout(() => {
             $(".text-alert").html("")
             $(".alert").removeClass("alert-danger show")
+        }, 5000)
+
+        return;
+    }
+
+    /* Caso dê problema de sincronização entre os índices do banco e do cache de livros */
+    if (data.message.includes("problema")) {
+        /* Aviso após remoção dos livros */
+        $(".text-alert").html('<i class="fa-solid fa-xmark me-2"></i>' + data.message)
+        $(".alert").addClass("alert-danger show")
+
+        if (intervalWarns) clearTimeout(intervalWarns);
+
+        intervalWarns = setTimeout(() => {
+            $(".alert").removeClass("alert-success show")
+            $(".text-alert").html("")
         }, 5000)
 
         return;
@@ -144,10 +162,10 @@ function getDataFormAddBook() {
 /* Evento: Dispara após abrir o modal de adicionar livro */
 $("#btn-add-book").on("click", () => {
     /* Obtenção do ID do novo livro */
-    const indexBook = cacheBooks.slice(-1)[0].id + 1;
+    const { id } = getDataFormAddBook()
 
     /* Preenche o campo do ID com o ID do novo livro fornecido */
-    $("#book-id").text(indexBook)
+    $("#book-id").text(id)
 })
 
 /* Evento: Alteração nos inputs do modal de adicionamento de livro */
@@ -255,5 +273,5 @@ $("#btn-save-book").on("click", async () => {
     })
 
     /* Atualizar lista */
-    reloadList("list-books")
+    reloadList("list-books", "warn-search")
 });
