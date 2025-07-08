@@ -1,12 +1,12 @@
 let cacheBooks = [];
 let idCacheBooks = 0;
+let intervalWarns;
 
 /* Função: Carregar a lista de livros */
 loadList("warn-search");
 
 /* Função: Atribuir ao `cacheBooks` a lista de livros */
 (async () => {
-    console.log("uai")
     await getAllBooks()
 });
 
@@ -149,7 +149,6 @@ function getDataFormAddBook() {
     const $categoryBook = $("#input-category");
     const $shelfBook = $("#input-shelf");
 
-
     return {
         id: cacheBooks.length ? cacheBooks[cacheBooks.length - 1].id + 1 : 1,
         shelf: $shelfBook.val().toUpperCase().trim(),
@@ -158,15 +157,6 @@ function getDataFormAddBook() {
         author: capitalize($authorBook.val().trim()),
     };
 };
-
-/* Evento: Dispara após abrir o modal de adicionar livro */
-$("#btn-add-book").on("click", () => {
-    /* Obtenção do ID do novo livro */
-    const { id } = getDataFormAddBook()
-
-    /* Preenche o campo do ID com o ID do novo livro fornecido */
-    $("#book-id").text(id)
-})
 
 /* Evento: Alteração nos inputs do modal de adicionamento de livro */
 $("#modal-add input").each((index, element) => {
@@ -190,7 +180,6 @@ $("#modal-add input").each((index, element) => {
     });
 })
 
-let intervalWarns;
 
 /* Evento: Adicionar um livro na lista de livros */
 $("#btn-save-book").on("click", async () => {
