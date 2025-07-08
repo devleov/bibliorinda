@@ -28,7 +28,7 @@ app.use(cookieParser());
 function protectionRouter(req, res, next) {
     /* Se o caminho for o /login e estiver logado então verificar a validação do token, se tudo estiver certo ir para o dashboard, caso contrário, deixar ir para o login, agora se não tiver o token, significa que não está logado, logo, deixará ir para o login. Agora se não tiver o token em qualquer outra rota então redirecionar para o /login. Agora se o usuário não estiver na rota de /login e tiver o token, verificar o token, se for válido deixar passar, se não for retornar para a página de login. */
 
-    const token = req.cookies.token;
+    const token = req.cookies.tokenLogin;
 
     /* Se tentar ir para o login e está logado verificar validação ? /dashboard : /login */
     if (req.path === "/login") {
@@ -80,7 +80,7 @@ app.post("/login/acess", (req, res) => {
         const token = jwt.sign({ email, password }, process.env.TOKEN_LOGIN, { expiresIn: "1h" });
 
         /* Salvando o cookie */
-        res.cookie("token", token, {
+        res.cookie("tokenLogin", token, {
             maxAge: 60 * 60 * 1000, /* 1h de duração por cookie */
             httpOnly: true, /* O cookie só é acessível pelo servidor */
             secure: true, /* Só em produção */
@@ -105,7 +105,8 @@ app.get("/dashboard", protectionRouter, (req, res) => {
 
 app.post("/logout", (req, res) => {
     try {
-        res.clearCookie("token");
+        /* Limpa cookie de logout */
+        res.clearCookie("tokenLogin");
 
         res.json({ status: "success", message: "Você deslogou com sucesso!" });
     } catch (err) {

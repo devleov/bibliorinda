@@ -24,7 +24,7 @@ async function searchBook(box, input, warn) {
     $(`#${warn}`).css("display", "none")
 
     // Para a pesquisa do modal de remoção de livros, adicionar o botão de remover o item
-    if (input == "search-remove") {
+    if (input == "input-remove") {
         data.forEach((element, index) => {
             text += `
             <tr>
