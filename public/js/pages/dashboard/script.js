@@ -75,7 +75,7 @@ function warnsToRequests(dataRequest, typeWarn, iconClassWarn) {
 
 /* Função: Carregar a lista de livros & Atribuir ao `cacheBooks` a lista de livros do banco de dados*/
 (async () => {
-    // await loadList("warn-search");
+    await loadList("warn-search");
 
     /* Ativação de todos os botões do gerencimento do BD após obtenção da requisição de carregamento da lista */
     $("#btn-add-book").removeAttr("disabled");
