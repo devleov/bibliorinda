@@ -62,6 +62,25 @@ loadList("warn-search");
 /* Função: Atribuir ao `cacheBooks` a lista de livros do banco de dados */
 (async () => { await getAllBooks() });
 
+/* Evento: Botão de truncar a tabela Livros */
+$("#btn-truncate-list").on("click", async () => {
+    url = "https://api-bibliorinda.onrender.com/truncateBook/9214891"
+    resp = await fetch(url, {
+        method: "POST",
+    });
+
+    data = await resp.json();
+
+    if (!resp.ok) {
+        return warnsToRequests(data, "danger", "fa-solid fa-xmark me-2");
+    }
+
+    warnsToRequests(data, "success", "fa-solid fa-check-circle me-2")
+
+    /* Limpa os livros no cache */
+    cacheBooks = [];
+});
+
 /* Evento: Alteração nos campos de pesquisa principal */
 $("#input-search").on("change", () => {
     searchBook("list-books", "input-search", "warn-search")
@@ -223,6 +242,8 @@ $("#btn-save-book").on("click", async () => {
             $(element).val("");
         });
 
+        console.log("está executando o lugar errado..")
+
         /* Aviso: Não foi possível adicionar o livro */
         return warnsToRequests(data, "danger", "fa-solid fa-xmark me-2");
     }
@@ -247,7 +268,7 @@ $("#btn-save-book").on("click", async () => {
     cacheBooks.push({ id, title, author, category, shelf });
 
     /* Aviso: Adicionou livro com sucesso */
-    warnsToRequests(dataAddBook, "success", "fa-solid fa-xmark me-2");
+    warnsToRequests(dataAddBook, "success", "fa-solid fa-check-circle me-2");
 
     /* Requisição API Bibliorinda para atualizar o próximo ID de livro */
     url = "https://api-bibliorinda.onrender.com/updateIdNextBook";
@@ -256,15 +277,14 @@ $("#btn-save-book").on("click", async () => {
         body: JSON.stringify({ idsToAdd: 1 }),
         headers: { "Content-type": "application/json" }
     });
-    data = await resp.json()
-    console.log(resp, data)
+    data = await resp.json();
 
     setTimeout(() => {
         if (!resp.ok) {
             warnsToRequests(data, "danger", "fa-solid fa-xmark me-2");
+        } else {
+            warnsToRequests(data, "success", "fa-solid fa-check-circle me-2");
         };
-        
-        warnsToRequests(data, "success", "fa-solid fa-check-circle me-2");
     }, 5000)
 
     /* Atualizar lista no front end */
