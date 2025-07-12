@@ -1,3 +1,20 @@
+/* Padrão: Desativar todos os botões do gerencimento do BD */
+$("#btn-add-book").attr("disabled", "disabled");
+$("#btn-remove-book").attr("disabled", "disabled");
+$("#btn-reload-list").attr("disabled", "disabled");
+
+/* Padrão: Desativar o campo de pesquisa principal */
+$("#input-search").attr("readonly", "readonly");
+
+/* Adição do aviso de carregamento */
+$("#warn-search").css("display", "block");
+$("#warn-search").html(`
+    <div class="p-2 d-flex align-items-center">
+        <div class="spinner-border me-2" role="status"></div>
+        <span class="text-dark fs-5 fw-bold">Carregando lista...</span>
+    </div>
+`);
+
 /* Inicialização: Variáveis de controle do sistema de livros */
 let cacheBooks = [];
 let intervalWarns = {};
@@ -56,11 +73,25 @@ function warnsToRequests(dataRequest, typeWarn, iconClassWarn) {
     }, timeIntervalWarns);
 };
 
-/* Função: Carregar a lista de livros */
-loadList("warn-search");
+/* Função: Carregar a lista de livros & Atribuir ao `cacheBooks` a lista de livros do banco de dados*/
+(async () => {
+    // await loadList("warn-search");
 
-/* Função: Atribuir ao `cacheBooks` a lista de livros do banco de dados */
-(async () => { await getAllBooks() });
+    /* Ativação de todos os botões do gerencimento do BD após obtenção da requisição de carregamento da lista */
+    $("#btn-add-book").removeAttr("disabled");
+    $("#btn-remove-book").removeAttr("disabled");
+    $("#btn-reload-list").removeAttr("disabled");
+
+    /* Padrão: Desativar o campo de pesquisa principal */
+    $("#input-search").removeAttr("readonly");
+
+    /* Exceto se tiver conteúdo no cacheBooks isso pode funcionar, pois se não vai sobrescrever o aviso que virá de `loadList` e não iria aparecer pois ia executar isso */
+    if (!cacheBooks.length == 0) {
+        /* Remoção dos avisos de carregamento */
+        $("#warn-search").css("display", "none");
+        $("#warn-search").html("");
+    }
+})();
 
 /* Evento: Botão de truncar a tabela Livros */
 $("#btn-truncate-list").on("click", async () => {
@@ -75,10 +106,12 @@ $("#btn-truncate-list").on("click", async () => {
         return warnsToRequests(data, "danger", "fa-solid fa-xmark me-2");
     }
 
-    warnsToRequests(data, "success", "fa-solid fa-check-circle me-2")
+    warnsToRequests(data, "success", "fa-solid fa-check-circle me-2");
 
     /* Limpa os livros no cache */
     cacheBooks = [];
+
+    reloadList("list-books");
 });
 
 /* Evento: Alteração nos campos de pesquisa principal */
@@ -93,7 +126,7 @@ $("#input-remove").on("change", () => {
 
 /* Evento: Reatualizar a lista */
 $("#btn-reload-list").on("click", () => {
-    reloadList("list-books", "warn-remove")
+    reloadList("list-books", "warn-search")
 });
 
 /* Padrão: Botão de salvar no modal de apagar livros como desligado */
@@ -150,7 +183,7 @@ $("#btn-trash-books").on("click", async () => {
     $("#btn-trash-books").attr("disabled", "disabled");
 
     /* Atualiza a lista do modal remoção de livros */
-    reloadList("list-remove");
+    reloadList("list-remove", "warn-remove");
 })
 
 /* Evento: Clique no botão de abrir o modal de remover livro */
@@ -179,28 +212,66 @@ $("#btn-remove-book").on("click", () => {
 /* Evento: Alteração nos inputs do modal de adicionamento de livro */
 $("#modal-add input").each((index, element) => {
     $(element).on("change", function () {
-        const { title, category, author } = getDataFormAddBook();
+        const { shelf, title, category, author } = getDataFormAddBook();
 
         /* Condição: Se o campo NÃO estiver vazio */
-        if ($(this).val().trim() !== "") {
-            $(this).addClass("is-valid")
-            $(this).removeClass("is-invalid")
+        if ($(element).val().trim() !== "") {
+            $(element).addClass("is-valid")
+            $(element).removeClass("is-invalid")
         } else {
             /* Condição: Se o campo ESTIVER vazio */
-            $(this).addClass("is-invalid")
-            $(this).removeClass("is-valid")
+            $(element).addClass("is-invalid")
+            $(element).removeClass("is-valid")
         }
 
-        /* Condição: Se todos os campos obrigatórios terem conteúdo - adicionar atributo no botão de salvar o livro */
-        if (title && author && category) {
+        /* Condição: Se todos os campos foram preenchidos uma vez, mas depois foram apagados, voltar para o estado inicial do botão */
+        if ($("#btn-save-book").attr("data-bs-dismiss")) {
+            return $("#btn-save-book").removeAttr("data-bs-dismiss");
+        }
+
+        /* Condição: Se todos os campos obrigatórios terem conteúdo permitir o uso do botão com o efeito de fechamento dos modais */
+        if (shelf && title && author && category) {
             $("#btn-save-book").attr("data-bs-dismiss", "modal");
         }
     });
 })
 
+$("#modal-add").on("keypress", (e) => {
+    if (e.keyCode == 13) {
+        const { shelf, title, category, author } = getDataFormAddBook();
+        
+        /* Verificar quais campos estão vazios e adicionar inválido neles */
+
+        /* Filtragem por elementos que possuem conteúdo vazio */
+        const inputsEmpty = $("#modal-add input").filter((index, element) => { return element.value.trim() == ""; });
+
+        /* Itera sobre os campos vazios */
+        inputsEmpty.each((index, element) => {
+            $(element).addClass("is-invalid")
+            $(element).removeClass("is-valid")
+        })
+
+        /* Fechar modal de adicionamento de livros se tiver todos os campos preenchidos */
+        if (shelf && title && author && category) {
+            createBook();
+
+            const modal_add = bootstrap.Modal.getInstance($("#modal-add"));
+            modal_add.hide();
+        }
+    }
+})
 
 /* Evento: Adicionar um livro na lista de livros */
 $("#btn-save-book").on("click", async () => {
+    createBook();
+});
+
+/* Função: Criar livro */
+
+async function createBook() {
+    /* Remover atributo do botão de adicionar livro */
+    $("#btn-save-book").removeAttr("data-bs-dismiss")
+
     /* Obtenção dos dados do modal de adicionar livro */
     const { shelf, title, category, author } = getDataFormAddBook();
 
@@ -209,21 +280,11 @@ $("#btn-save-book").on("click", async () => {
 
     /* Itera sobre os campos vazios */
     inputsEmpty.each((index, element) => {
-
-        /* Sempre independente se o campo de prateleira estiver vazio atribuir que está tudo certo, pois ele é opcional. */
-        if (element.id == "input-shelf") {
-            $(element).addClass("is-valid")
-            $(element).removeClass("is-invalid")
-
-            return;
-        }
-
-        /* Os demais campos se estiver vazio atribuir que precisa preencher, pois é obrigatório. */
         $(element).addClass("is-invalid")
         $(element).removeClass("is-valid")
     })
 
-    if (!title || !author || !category) return;
+    if (!shelf || !title || !author || !category) return;
 
     /* Requisição API Bibliorinda para adicionar um livro */
     url = "https://api-bibliorinda.onrender.com/createBook";
@@ -233,7 +294,7 @@ $("#btn-save-book").on("click", async () => {
         headers: { "Content-type": "application/json" },
     });
 
-    const dataAddBook = await resp.json();
+    data = await resp.json();
 
     if (!resp.ok) {
         /* Remoção: Limpeza do conteúdo dos campos de adicionamento de livro */
@@ -242,51 +303,25 @@ $("#btn-save-book").on("click", async () => {
             $(element).val("");
         });
 
-        console.log("está executando o lugar errado..")
-
         /* Aviso: Não foi possível adicionar o livro */
         return warnsToRequests(data, "danger", "fa-solid fa-xmark me-2");
     }
 
-    /* SUCESSO APÓS ADICIONAR LIVRO NO BANCO DE DADOS */
+    /* ID atual deste livro a ser adicionado */
+    const idCurrentBook = await data.idCurrentBook;
+
+    /* Adição no cache o livro que foi adicionado no banco de dados */
+    cacheBooks.push({ id: idCurrentBook, shelf, title, category, author });
+
+    /* Avisar ao cliente que deu tudo certo na criação do livro */
+    warnsToRequests(data, "success", "fa-solid fa-check-circle me-2");
+
+    /* Atualizar lista no front end */
+    reloadList("list-books", "warn-search");
 
     /* Remoção: Limpeza do conteúdo dos campos de adicionamento de livro */
     $("#modal-add input").each((index, element) => {
         $(element).removeClass("is-valid");
         $(element).val("");
     });
-
-    /* ADICIONANDO LIVRO NO FRONT END (NA MEMÓRIA) */
-
-    /* Requisição API Bibliorinda para obter próximo ID de livro */
-    url = "https://api-bibliorinda.onrender.com/getIdNextBook";
-    resp = await fetch(url)
-    data = await resp.json();
-    id = await data.idNextBook;
-
-    /* Atualizar a lista cache da lista de livros */
-    cacheBooks.push({ id, title, author, category, shelf });
-
-    /* Aviso: Adicionou livro com sucesso */
-    warnsToRequests(dataAddBook, "success", "fa-solid fa-check-circle me-2");
-
-    /* Requisição API Bibliorinda para atualizar o próximo ID de livro */
-    url = "https://api-bibliorinda.onrender.com/updateIdNextBook";
-    resp = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify({ idsToAdd: 1 }),
-        headers: { "Content-type": "application/json" }
-    });
-    data = await resp.json();
-
-    setTimeout(() => {
-        if (!resp.ok) {
-            warnsToRequests(data, "danger", "fa-solid fa-xmark me-2");
-        } else {
-            warnsToRequests(data, "success", "fa-solid fa-check-circle me-2");
-        };
-    }, 5000)
-
-    /* Atualizar lista no front end */
-    reloadList("list-books", "warn-search")
-});
+}

@@ -21,7 +21,7 @@
     <input autofocus autocomplete="off" type="text" class="form-control form-control-lg mb-4" placeholder="..."
         id="input-search">
 
-    <table class="table table-dark table-striped-columns">
+    <table class="table table-dark table-hover table-striped" id="table-search">
         <thead>
             <tr>
                 <td>Id</td>
@@ -35,7 +35,7 @@
         <tbody id="list-books"></tbody>
     </table>
 
-    <div id="warn-search" style="display: none;" class="mb-5"></div>
+    <div id="warn-search" style="display: none;"></div>
 
     <!-- Modal de adicionar livro -->
     <div class="modal fade" tabindex="-1" id="modal-add">
@@ -47,13 +47,13 @@
                 </div>
 
                 <div class="modal-body d-flex gap-2 flex-column">
-                    <input id="input-shelf" required class="form-control" type="text"
-                        placeholder="Insira a prateleira do livro">
-                    <input id="input-name" required class="form-control" type="text"
+                    <input id="input-shelf" class="form-control" type="text"
+                        placeholder="* Insira a prateleira do livro">
+                    <input id="input-name" class="form-control" type="text"
                         placeholder="* Insira o nome do livro">
                     <input id="input-category" class="form-control" type="text"
                         placeholder="* Insira a categoria do livro">
-                    <input id="input-author" required class="form-control" type="text"
+                    <input id="input-author" class="form-control" type="text"
                         placeholder="* Insira o nome do autor">
                 </div>
 

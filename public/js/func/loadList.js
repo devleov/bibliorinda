@@ -7,7 +7,7 @@ async function loadList(warn) {
     /* Variável de controle de texto */
     let text = "";
 
-    /* Requisição para obter todos os livros da API Bibliorinda */
+    /* Requisição para obter todos os livros da API Bibliorinda e mandar para o cache */
     const arrayBook = await getCacheAllBooks();
 
     if (arrayBook.length == 0) {

@@ -7,6 +7,13 @@ async function reloadList(box, warn) {
     /* Limpar os avisos da tela */
     $(`#${warn}`).html("")
     $(`#${warn}`).css("display", "none")
+
+    if (cacheBooks.length === 0) {
+        $(`#${warn}`).html('<i class="fa-solid fa-magnifying-glass-plus fs-5 me-2"></i> <p class="mb-0 fw-bold fs-4 text-dark d-inline">Não há livros por aqui..</p>')
+        $(`#${warn}`).css("display", "block");
+
+        return;
+    }
     
     if (box == "list-remove") {
         cacheBooks.forEach((element, index) => {
