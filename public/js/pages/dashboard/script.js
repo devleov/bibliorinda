@@ -226,6 +226,16 @@ $("#btn-trash-books").on("click", async () => {
 $("#btn-remove-book").on("click", () => {
     let text = "";
 
+    /* Limpar os avisos da tela */
+    $("#warn-remove").html("")
+    $("#warn-remove").css("display", "none")
+
+    if (cacheBooks.length === 0) {
+        $("#warn-remove").html('<i class="fa-solid fa-magnifying-glass-plus fs-5 me-2"></i> <p class="mb-0 fw-bold fs-4 text-dark d-inline">Não há livros por aqui..</p>')
+        $("#warn-remove").css("display", "block");
+
+        return;
+    }
     cacheBooks.slice(0, 10).forEach((element, index) => {
         text += `
             <tr>
@@ -275,7 +285,7 @@ $("#modal-add input").each((index, element) => {
 $("#modal-add").on("keypress", (e) => {
     if (e.keyCode == 13) {
         const { shelf, title, category, author } = getDataFormAddBook();
-        
+
         /* Verificar quais campos estão vazios e adicionar inválido neles */
 
         /* Filtragem por elementos que possuem conteúdo vazio */

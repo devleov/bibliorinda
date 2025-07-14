@@ -15,8 +15,6 @@ async function reloadList(box, warn) {
         return;
     }
 
-    console.log("Olha só alguma lista esta recarregando por aqui..")
-    
     if (box == "list-remove") {
         cacheBooks.forEach((element, index) => {
             text += `
