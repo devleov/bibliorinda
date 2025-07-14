@@ -73,7 +73,7 @@ function warnsToRequests(dataRequest, typeWarn, iconClassWarn) {
     }, timeIntervalWarns);
 };
 
-/* Função: Carregar a lista de livros & Atribuir ao `cacheBooks` a lista de livros do banco de dados*/
+/* Função: Carregar a lista de livros & Atribui ao `cacheBooks` a lista de livros do banco de dados */
 (async () => {
     await loadList("warn-search");
 
@@ -129,8 +129,9 @@ $("#btn-reload-list").on("click", () => {
     reloadList("list-books", "warn-search")
 });
 
-/* Padrão: Botão de salvar no modal de apagar livros como desligado */
+/* Padrão: Botão de salvar no modal de apagar livros como desligado, e o de cancelar a remoção pois não tem conteúdo dentro ainda da lista de remoção de livros */
 $("#btn-trash-books").attr("disabled", "disabled");
+$("#btn-clean-books").attr("disabled", "disabled")
 
 /* Evento: Remoção de livro pelo atributo `data-ba-id` */
 $("#modal-remove").on("click", ".btn-remove-item", function () {
@@ -141,8 +142,31 @@ $("#modal-remove").on("click", ".btn-remove-item", function () {
     booksInTrash.push(idElement);
 
     $("#btn-trash-books").removeAttr("disabled");
+    $("#btn-clean-books").removeAttr("disabled");
 
+    /* Construindo a estrutura vísivel dos itens que serão apagados */
+    let text = "<p class='fs-5 fw-bold'>Lista de possíveis deletados</p>";
+
+    booksInTrash.forEach((bookTrash) => {
+        /* Procura o nome do livro em relação ao id do que o cliente tá querendo apagar */
+        const data = cacheBooks.find((element) => { return element.id == bookTrash });
+
+        text += `Id: ${bookTrash} Título: ${data.title}<br>`;
+    });
+
+    $("#view-trash-book").html(text);
 });
+
+/* Evento: Limpa a lista de lixo dos livros que iriam ser apagados */
+$("#btn-clean-books").on("click", () => {
+    booksInTrash = [];
+
+    /* Desativa o botão de apagar a lista de lixo dos livros, pois já foi clicado e apagado */
+    $("#btn-clean-books").attr("disabled", "disabled");
+
+    /* Limpa o conteúdo da visualização dos livros que iriam ser apagados */
+    $("#view-trash-book").html("");
+})
 
 /* Evento: Clique no botão de salvar as alterações no modal de remoção de livro */
 $("#btn-trash-books").on("click", async () => {
@@ -157,9 +181,15 @@ $("#btn-trash-books").on("click", async () => {
 
     data = await resp.json();
 
+    /* Obtenção da instância do modal */
+    const modal = bootstrap.Modal.getInstance($("#modal-remove"));
+
     if (!resp.ok || data.message.includes("problema")) {
         /* 1° Condição - Aviso: Não foi possível remover os livros */
         /* 2° Condição - Aviso: Conflito de IDs de cache com o banco de dados */
+
+        /* Esconde o modal */
+        modal.hide();
 
         return warnsToRequests(data, "danger", "fa-solid fa-xmark me-2");
     }
@@ -176,6 +206,12 @@ $("#btn-trash-books").on("click", async () => {
     /* Aviso: Remoção dos livros */
     warnsToRequests(data, "success", "fa-solid fa-check-circle me-2")
 
+    /* Limpa a visualização de possíveis livros deletados */
+    $("#view-trash-book").html("");
+
+    /* Esconde o modal */
+    modal.hide();
+
     /* Limpa os IDs dos livros foram apagados */
     booksInTrash = [];
 
@@ -190,7 +226,7 @@ $("#btn-trash-books").on("click", async () => {
 $("#btn-remove-book").on("click", () => {
     let text = "";
 
-    cacheBooks.forEach((element, index) => {
+    cacheBooks.slice(0, 10).forEach((element, index) => {
         text += `
             <tr>
                 <td>${element.id}</td>
