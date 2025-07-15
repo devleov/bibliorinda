@@ -2,6 +2,7 @@
 $("#btn-add-book").attr("disabled", "disabled");
 $("#btn-remove-book").attr("disabled", "disabled");
 $("#btn-reload-list").attr("disabled", "disabled");
+$("#btn-edit-book").attr("disabled", "disabled");
 
 /* Padrão: Desativar o campo de pesquisa principal */
 $("#input-search").attr("readonly", "readonly");
@@ -81,6 +82,7 @@ function warnsToRequests(dataRequest, typeWarn, iconClassWarn) {
     $("#btn-add-book").removeAttr("disabled");
     $("#btn-remove-book").removeAttr("disabled");
     $("#btn-reload-list").removeAttr("disabled");
+    $("#btn-edit-book").removeAttr("disabled");
 
     /* Padrão: Desativar o campo de pesquisa principal */
     $("#input-search").removeAttr("readonly");
@@ -92,6 +94,14 @@ function warnsToRequests(dataRequest, typeWarn, iconClassWarn) {
         $("#warn-search").html("");
     }
 })();
+
+/* Evento: Clique no botão de modal de edição de livros */
+
+$("#btn-edit-book").on("click", () => {
+
+    $("#btn-save-edit").attr("disabled", "disabled");
+
+});
 
 /* Evento: Botão de truncar a tabela Livros */
 $("#btn-truncate-list").on("click", async () => {

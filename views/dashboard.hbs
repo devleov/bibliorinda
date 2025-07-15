@@ -10,6 +10,9 @@
         <button class="btn btn-secondary" data-bs-target="#modal-remove" data-bs-toggle="modal" id="btn-remove-book"><i
                 class="fa-solid fa-trash me-2"></i> Remover livro</button>
 
+        <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modal-edit" type="button"
+            id="btn-edit-book"><i class="fas fa-edit me-2"></i> Editar livro</button>
+
         <button class="btn btn-info" type="button" id="btn-reload-list"><i class="fa-solid fa-rotate-right me-2"></i>
             Atualizar livros</button>
 
@@ -30,7 +33,7 @@
             <tr>
                 <td>Id</td>
                 <td>Prateleira</td>
-                <td>Nome</td>
+                <td>Título</td>
                 <td>Categoria</td>
                 <td>Ator</td>
             </tr>
@@ -89,7 +92,7 @@
                             <tr>
                                 <td>Id</td>
                                 <td>Prateleira</td>
-                                <td class="w-50">Nome</td>
+                                <td class="w-50">Título</td>
                                 <td class="w-25">Categoria</td>
                                 <td class="w-25">Ator</td>
                                 <td></td>
@@ -110,13 +113,63 @@
                 </div>
 
                 <div class="modal-footer">
-                    
+
                     <div style="margin-right: auto;">
                         <button id="btn-trash-books" class="btn btn-success"><i
                                 class="fa-solid fa-floppy-disk me-2"></i> Salvar</button>
                         <button id="btn-clean-books" class="btn btn-danger"><i class="fa-solid fa-xmark me-2"></i>
                             Cancelar tudo</button>
                     </div>
+
+                    <button class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-solid fa-xmark me-2"></i>
+                        Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de editar livro -->
+    <div class="modal modal-lg fade" tabindex="-1" id="modal-edit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header d-flex flex-column">
+                    <p class="h2">Editar um livro..</p>
+                    <p class="h5">Pesquise abaixo</p>
+                </div>
+
+                <div class="modal-body">
+                    <label class="form-label" for="input-edit">Pesquise por ID o livro que quer editar:</label>
+
+                    <div class="input-group">
+                        <input class="form-control" id="input-edit" min="1" type="number" placeholder="...">
+                        <button class="btn btn-primary"><i class="fas fa-search me-2"></i> Pesquisar</button>
+                    </div>
+
+                    <div id="warn-edit" class="mt-2" style="display: none;">
+                        <p class="mb-0 fw-bold fs-4 text-dark">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> Não achei livros com essas
+                            características.
+                        </p>
+                    </div>
+
+                    <div class="mt-4 d-flex flex-column gap-2 border rounded p-2">
+                        <input class="form-control" type="text" placeholder="ID..." readonly>
+                        <div class="d-flex gap-2">
+                            <input class="form-control w-25 d-block" type="text" placeholder="Prateleira..." readonly>
+                            <input class="form-control w-75 d-block" type="text" placeholder="Título..." readonly>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <input class="form-control" type="text" placeholder="Categoria..." readonly>
+                            <input class="form-control" type="text" placeholder="Ator..." readonly>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="modal-footer">
+                    <button id="btn-save-edit" class="btn btn-success"><i class="fa-solid fa-floppy-disk me-2"></i>
+                        Salvar</button>
 
                     <button class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-solid fa-xmark me-2"></i>
                         Fechar</button>
