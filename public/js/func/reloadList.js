@@ -16,7 +16,7 @@ async function reloadList(box, warn) {
     }
 
     if (box == "list-remove") {
-        cacheBooks.forEach((element, index) => {
+        cacheBooks.slice(0, 10).forEach((element, index) => {
             text += `
             <tr>
                 <td>${element.id}</td>
@@ -34,7 +34,7 @@ async function reloadList(box, warn) {
 
     } else {
         
-        cacheBooks.forEach((element, index) => {
+        cacheBooks.slice(0, 10).forEach((element, index) => {
             text += `
             <tr>
                 <td>${element.id}</td>

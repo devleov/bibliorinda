@@ -98,8 +98,41 @@ function warnsToRequests(dataRequest, typeWarn, iconClassWarn) {
 /* Evento: Clique no botão de modal de edição de livros */
 
 $("#btn-edit-book").on("click", () => {
-
+    $("#warn-edit").css("display", "none")
     $("#btn-save-edit").attr("disabled", "disabled");
+
+    $("#btn-search-edit").on("click", () => {
+        $("#input-id-edit").val("")
+        $("#input-shelf-edit").val("")
+        $("#input-title-edit").val("")
+        $("#input-category-edit").val("")
+        $("#input-author-edit").val("")
+
+        $("#warn-edit").css("display", "none")
+
+        const $id = $("#input-edit").val();
+        if (!$id) return;
+
+        const data = cacheBooks.find((element) => element.id == $id);
+
+        if (data) {
+            $("#input-id-edit").val(data.id)
+            $("#input-shelf-edit").val(data.shelf)
+            $("#input-title-edit").val(data.title)
+            $("#input-category-edit").val(data.category)
+            $("#input-author-edit").val(data.author)
+
+            /* Permitir alteração nos campos */
+            $("#input-shelf-edit").removeAttr("readonly")
+            $("#input-title-edit").removeAttr("readonly")
+            $("#input-category-edit").removeAttr("readonly")
+            $("#input-author-edit").removeAttr("readonly")
+
+            return;
+        }
+
+        $("#warn-edit").css("display", "block");
+    })
 
 });
 
