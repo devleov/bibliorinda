@@ -11,6 +11,8 @@ async function logout() {
         intervalWarns = setTimeout(() => {
             window.location.href = "/login";
         }, 2000)
+
+        return;
     } 
 
     $(".alert").addClass("alert-danger show")
