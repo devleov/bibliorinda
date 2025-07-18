@@ -1,8 +1,5 @@
 async function logout() {
-    const resp = await fetch("/logout", {
-        method: "POST",
-    });
-
+    const resp = await fetch("/logout", { method: "POST" });
     const data = await resp.json();
 
     if (data.status == "success") {
@@ -14,10 +11,9 @@ async function logout() {
         intervalWarns = setTimeout(() => {
             window.location.href = "/login";
         }, 2000)
-    } else {
-        $(".alert").addClass("alert-danger show")
-        $(".text-alert").html('<i class="fa-solid fa-xmark me-2"></i>' + data.message)
+    } 
 
-        console.log(data.message + ":" + " " + data.err)
-    }
+    $(".alert").addClass("alert-danger show")
+    $(".text-alert").html('<i class="fa-solid fa-xmark me-2"></i>' + data.message)
+    console.error(data.err)
 }

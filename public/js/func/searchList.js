@@ -29,7 +29,7 @@ async function searchBook(box, input, warn) {
         return;
     }
 
-    $(`#${warn}`).css("display", "none")
+    $(`#${warn}`).hide();
 
     // Para a pesquisa do modal de remoção de livros, adicionar o botão de remover o item
     if (input == "input-remove") {

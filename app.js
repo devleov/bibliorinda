@@ -110,7 +110,7 @@ app.post("/logout", (req, res) => {
 
         res.json({ status: "success", message: "Você deslogou com sucesso!" });
     } catch (err) {
-        res.json({ status: "failed", message: "Não foi possível deslogar!", err: err });
+        res.json({ status: "failed", message: "Não foi possível deslogar!", err });
     };
 });
 
