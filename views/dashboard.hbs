@@ -154,7 +154,7 @@
                         </p>
                     </div>
 
-                    <div class="mt-4 d-flex flex-column gap-2 border rounded p-2">
+                    <div class="mt-4 d-flex flex-column gap-2 border rounded p-2" id="inputs-edit">
                         <div class="d-flex gap-2">
                             <div class="w-25">
                                 <label for="input-id-edit">ID:</label>
@@ -165,6 +165,7 @@
                                 <label for="input-shelf-edit">Prateleira:</label>
                                 <input id="input-shelf-edit" class="form-control d-block" type="text" placeholder="..."
                                     readonly>
+                                <span class="mt-0 shelf-edit-invalid-feedback invalid-feedback"></span>
                             </div>
                             <div class="w-50">
                                 <label for="input-title-edit">Título:</label>
@@ -191,7 +192,7 @@
 
                 <div class="modal-footer">
                     <button id="btn-save-edit" class="btn btn-success"><i class="fa-solid fa-floppy-disk me-2"></i>
-                        Salvar</button>
+                        Salvar alterações</button>
 
                     <button class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-solid fa-xmark me-2"></i>
                         Fechar</button>
