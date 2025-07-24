@@ -99,7 +99,6 @@ app.get("/dashboard", protectionRouter, (req, res) => {
         icon: "/img/dashboard-icon.svg",
         css: "/css/pages/dashboard/style.css",
         js: "/js/pages/dashboard/script.js",
-        name: "Débora",
     });
 });
 
