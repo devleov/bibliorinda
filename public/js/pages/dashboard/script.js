@@ -255,88 +255,89 @@ $("#btn-remove-book").on("click", () => {
 
     $("#list-remove").html(text);
 
-    /* 📅 -> ➖ Evento: Adição de livro para remoção pelo atributo `data-ba-id` */
-    $("#modal-remove").on("click", ".btn-remove-item", function () {
+});
 
-        /* Obtenção do id do elemento correspondente do botão de excluir */
-        const idElement = $(this).attr("data-ba-id");
+/* 📅 -> ➖ Evento: Adição de livro para remoção pelo atributo `data-ba-id` */
+$("#modal-remove").on("click", ".btn-remove-item", function () {
 
-        /* Se o id já incluir dentro do `booksInTrash` então ignorar */
-        if (booksInTrash.includes(idElement)) return;
+    /* Obtenção do id do elemento correspondente do botão de excluir */
+    const idElement = $(this).attr("data-ba-id");
 
-        booksInTrash.push(idElement);
+    /* Se o id já incluir dentro do `booksInTrash` então ignorar */
+    if (booksInTrash.includes(idElement)) return;
 
-        /* Remove a desabilitação dos botões de lixo e limpeza */
-        $("#btn-trash-books").prop("disabled", false);
-        $("#btn-clean-books").prop("disabled", false);
+    booksInTrash.push(idElement);
 
-        /* Construindo a estrutura vísivel dos itens que serão apagados */
-        let text = "<p class='fs-5 fw-bold'>Lista de possíveis deletados</p>";
+    /* Remove a desabilitação dos botões de lixo e limpeza */
+    $("#btn-trash-books").prop("disabled", false);
+    $("#btn-clean-books").prop("disabled", false);
 
-        booksInTrash.forEach((bookTrash) => {
-            const data = cacheBooks.find((el) => { return el.id == bookTrash });
-            text += `Id: ${bookTrash} Título: ${data.title}<br>`;
-        });
+    /* Construindo a estrutura vísivel dos itens que serão apagados */
+    let text = "<p class='fs-5 fw-bold'>Lista de possíveis deletados</p>";
 
-        $("#view-trash-book").html(text);
+    booksInTrash.forEach((bookTrash) => {
+        const data = cacheBooks.find((el) => { return el.id == bookTrash });
+        text += `Id: ${bookTrash} Título: ${data.title}<br>`;
     });
 
-    /* 📅 -> ➖ Evento: Apagar os livros que estão na lista de lixo */
-    $("#btn-trash-books").on("click", async () => {
-        $("#btn-trash-books").prop("disabled", true);
+    $("#view-trash-book").html(text);
+});
 
-        /* Obtenção da instância do modal de remoção de livros */
-        const modal_remove = bootstrap.Modal.getInstance($("#modal-remove"));
+/* 📅 -> ➖ Evento: Apagar os livros que estão na lista de lixo */
+$("#btn-trash-books").on("click", async () => {
+    $("#btn-trash-books").prop("disabled", true);
 
-        /* Requisição API Bibliorinda para remover livros */
-        url = "https://api-bibliorinda.onrender.com/deleteBook";
-        resp = await fetch(url, {
-            method: "DELETE",
-            body: JSON.stringify({ booksInTrash }),
-            headers: { "Content-type": "application/json" },
-        });
+    /* Obtenção da instância do modal de remoção de livros */
+    const modal_remove = bootstrap.Modal.getInstance($("#modal-remove"));
 
-        data = await resp.json();
+    /* Requisição API Bibliorinda para remover livros */
+    url = "https://api-bibliorinda.onrender.com/deleteBook";
+    resp = await fetch(url, {
+        method: "DELETE",
+        body: JSON.stringify({ booksInTrash }),
+        headers: { "Content-type": "application/json" },
+    });
 
-        if (!resp.ok || data.message.includes("problema")) {
-            /* 1° Condição - Aviso: Não foi possível remover os livros */
-            /* 2° Condição - Aviso: Conflito de IDs de cache com o banco de dados */
+    data = await resp.json();
 
-            /* Esconde o modal */
-            modal_remove.hide();
+    if (!resp.ok || data.message.includes("problema")) {
+        /* 1° Condição - Aviso: Não foi possível remover os livros */
+        /* 2° Condição - Aviso: Conflito de IDs de cache com o banco de dados */
 
-            return warnsToRequests(data, "danger", "fa-solid fa-xmark me-2");
-        }
-
-        booksInTrash.forEach((bookIds) => {
-            const idArray = cacheBooks.findIndex((el) => el.id == bookIds)
-            cacheBooks.splice(idArray, 1);
-        });
-
-        warnsToRequests(data, "success", "fa-solid fa-check-circle me-2")
-
-        $("#btn-trash-books").prop("disabled", true);
-        $("#btn-clean-books").prop("disabled", true);
-
-        booksInTrash = [];
-        $("#view-trash-book").html("");
+        /* Esconde o modal */
         modal_remove.hide();
 
-        /* Atualiza a lista do modal de remoção e a lista principal dos livros */
-        reloadList("list-remove", "warn-remove");
-        reloadList("list-books", "warn-search");
+        return warnsToRequests(data, "danger", "fa-solid fa-xmark me-2");
+    }
+
+    booksInTrash.forEach((bookIds) => {
+        const idArray = cacheBooks.findIndex((el) => el.id == bookIds)
+        cacheBooks.splice(idArray, 1);
     });
 
-    /* 📅 -> ➖ Evento: Limpa a lista de lixo dos livros que iriam ser apagados */
-    $("#btn-clean-books").on("click", () => {
-        booksInTrash = [];
+    warnsToRequests(data, "success", "fa-solid fa-check-circle me-2")
 
-        /* Desativa o botão de apagar a lista de lixo dos livros, pois já foi clicado e apagado */
-        $("#btn-clean-books").attr("disabled", "disabled");
+    $("#btn-trash-books").prop("disabled", true);
+    $("#btn-clean-books").prop("disabled", true);
 
-        /* Limpa o conteúdo da visualização dos livros que iriam ser apagados */
-        $("#view-trash-book").html("");
-    });
+    booksInTrash = [];
+    $("#view-trash-book").html("");
+    modal_remove.hide();
+
+    /* Atualiza a lista do modal de remoção e a lista principal dos livros */
+    reloadList("list-remove", "warn-remove");
+    reloadList("list-books", "warn-search");
+});
+
+/* 📅 -> ➖ Evento: Limpa a lista de lixo dos livros que iriam ser apagados */
+$("#btn-clean-books").on("click", () => {
+    booksInTrash = [];
+
+    /* Desativa o botão de apagar a lista de lixo dos livros, pois já foi clicado e apagado */
+    $("#btn-clean-books").attr("disabled", "disabled");
+
+    /* Limpa o conteúdo da visualização dos livros que iriam ser apagados */
+    $("#view-trash-book").html("");
 });
 
 /* 📝 Variáveis de controle dos dados preenchidos */
@@ -353,126 +354,126 @@ $("#btn-save-edit").prop("disabled", true);
 /* 📅 -> 📝 Evento: Clique para abrir modal de edição de livros */
 $("#btn-edit-book").on("click", () => {
     $("#warn-edit").hide();
+});
 
-    /* 📅 -> 📝 Evento: Clique para o botão de pesquisar ID para edição */
-    $("#btn-search-edit").on("click", () => {
-        $("#warn-edit").hide();
+/* 📅 -> 📝 Evento: Clique para o botão de pesquisar ID para edição */
+$("#btn-search-edit").on("click", () => {
+    $("#warn-edit").hide();
 
-        $("#input-id-edit, #input-shelf-edit, #input-title-edit, #input-category-edit, #input-author-edit").val("");
+    $("#input-id-edit, #input-shelf-edit, #input-title-edit, #input-category-edit, #input-author-edit").val("");
 
-        const $id = $("#input-edit").val();
-        if (!$id) return;
+    const $id = $("#input-edit").val();
+    if (!$id) return;
 
-        const data = cacheBooks.find((el) => el.id == $id);
+    const data = cacheBooks.find((el) => el.id == $id);
 
-        if (data) {
-            /* Criando objeto com os dados preenchidos do livro correspondente antes da edição */
-            const valueFilled = {
-                "id": data.id,
-                "shelf": data.shelf,
-                "title": data.title,
-                "category": data.category,
-                "author": data.author
-            };
+    if (data) {
+        /* Criando objeto com os dados preenchidos do livro correspondente antes da edição */
+        const valueFilled = {
+            "id": data.id,
+            "shelf": data.shelf,
+            "title": data.title,
+            "category": data.category,
+            "author": data.author
+        };
 
-            /* Quando for preencher os valores nos campos, atribuir também os valores as variáveis correspondentes */
-            for (const nameInput in valueFilled) {
-                $(`#input-${nameInput}-edit`).val(valueFilled[nameInput]);
-                valueBook[`input-${nameInput}-edit`] = valueFilled[nameInput];
-            };
+        /* Quando for preencher os valores nos campos, atribuir também os valores as variáveis correspondentes */
+        for (const nameInput in valueFilled) {
+            $(`#input-${nameInput}-edit`).val(valueFilled[nameInput]);
+            valueBook[`input-${nameInput}-edit`] = valueFilled[nameInput];
+        };
 
-            /* Permitir alteração nos campos */
-            $("#input-shelf-edit, #input-title-edit, #input-category-edit, #input-author-edit").prop("readonly", false)
+        /* Permitir alteração nos campos */
+        $("#input-shelf-edit, #input-title-edit, #input-category-edit, #input-author-edit").prop("readonly", false)
 
-            return;
-        }
+        return;
+    }
 
-        $("#warn-edit").show();
-    });
+    $("#warn-edit").show();
+});
 
-    /* 📅 -> 📝 Evento: Desfoque nos inputs de edição de campo */
-    $("#inputs-edit input").on("blur", () => {
-        /* Controlador de conteúdo nos inputs de edição */
-        let hasChange = false;
+/* 📅 -> 📝 Evento: Desfoque nos inputs de edição de campo */
+$("#inputs-edit input").on("blur", () => {
+    /* Controlador de conteúdo nos inputs de edição */
+    let hasChange = false;
 
-        /* Percorrendo os inputs que foram alterados e os preenchidos */
-        $("#inputs-edit input").each((_, currentValue) => {
-            if (hasChange) return;
+    /* Percorrendo os inputs que foram alterados e os preenchidos */
+    $("#inputs-edit input").each((_, currentValue) => {
+        if (hasChange) return;
 
-            if (currentValue.id === "input-shelf-edit") {
-                if (!isNaN($(currentValue).val().charAt(0)) || isNaN($(currentValue).val().charAt(1)) || $(currentValue).val().length < 2 || $(currentValue).val().length > 2) {
-                    $(".shelf-edit-invalid-feedback").text("A estrutura prateleira correta ex: A1");
-                    $("#input-shelf-edit").addClass("is-invalid")
-                    $("#input-shelf-edit").removeClass("is-valid")
+        if (currentValue.id === "input-shelf-edit") {
+            if (!isNaN($(currentValue).val().charAt(0)) || isNaN($(currentValue).val().charAt(1)) || $(currentValue).val().length < 2 || $(currentValue).val().length > 2) {
+                $(".shelf-edit-invalid-feedback").text("A estrutura prateleira correta ex: A1");
+                $("#input-shelf-edit").addClass("is-invalid")
+                $("#input-shelf-edit").removeClass("is-valid")
 
-                    return;
-                }
-
-                $(".shelf-edit-invalid-feedback").text("");
-                $("#input-shelf-edit").removeClass("is-invalid")
+                return;
             }
 
-            /* Se o valor atual não é igual ao valor preenchido */
-            if ($(currentValue).val().toLowerCase() != new String(valueBook[currentValue.id]).toLowerCase()) {
-                /* Há alteração nos inputs */
-                return hasChange = true;
-            }
-
-            hasChange = false;
-        });
-
-        if (hasChange) {
-            $("#btn-save-edit").attr("data-bs-dismiss", "modal");
-            return $("#btn-save-edit").prop("disabled", false);
+            $(".shelf-edit-invalid-feedback").text("");
+            $("#input-shelf-edit").removeClass("is-invalid")
         }
 
-        $("#btn-save-edit").removeAttr("data-bs-dismiss");
-        $("#btn-save-edit").prop("disabled", true);
-    });
-
-    /* 📅 -> 📝 Evento: Salvar as alterações da edição */
-    $("#btn-save-edit").on("click", async () => {
-        $("#btn-save-edit").prop("disabled", true);
-        $("#btn-save-edit").removeAttr("data-bs-dismiss");
-
-        const modal_edit = bootstrap.Modal.getInstance($("#modal-edit"));
-
-        const output_id = $("#input-id-edit").val();
-        const output_shelf = $("#input-shelf-edit").val();
-        const output_title = $("#input-title-edit").val();
-        const output_category = $("#input-category-edit").val();
-        const output_author = $("#input-author-edit").val();
-
-        /* Requisição API Bibliorinda para editar livros */
-        url = "https://api-bibliorinda.onrender.com/updateBook";
-        resp = await fetch(url, {
-            method: "PUT",
-            headers: { "Content-type": "application/json" },
-            body: JSON.stringify({ id: output_id, shelf: output_shelf, title: output_title, category: output_category, author: output_author }),
-        });
-        data = await resp.json();
-
-        if (!resp.ok) {
-            modal_edit.hide();
-            return warnsToRequests(data, "danger", "fa-solid fa-xmark me-2");
+        /* Se o valor atual não é igual ao valor preenchido */
+        if ($(currentValue).val().toLowerCase() != new String(valueBook[currentValue.id]).toLowerCase()) {
+            /* Há alteração nos inputs */
+            return hasChange = true;
         }
 
-        warnsToRequests(data, "success", "fa-solid fa-check-circle me-2");
-
-        /* Atualizando no cache */
-        const id = cacheBooks.findIndex((el) => el.id === valueBook["input-id-edit"])
-        cacheBooks[id].shelf = output_shelf;
-        cacheBooks[id].title = output_title;
-        cacheBooks[id].category = output_category;
-        cacheBooks[id].author = output_author;
-
-        $("#input-edit").val("");
-        $("#inputs-edit input").each((index, element) => {
-            $(element).val("");
-        });
-
-        reloadList("list-books", "warn-search");
+        hasChange = false;
     });
+
+    if (hasChange) {
+        $("#btn-save-edit").attr("data-bs-dismiss", "modal");
+        return $("#btn-save-edit").prop("disabled", false);
+    }
+
+    $("#btn-save-edit").removeAttr("data-bs-dismiss");
+    $("#btn-save-edit").prop("disabled", true);
+});
+
+/* 📅 -> 📝 Evento: Salvar as alterações da edição */
+$("#btn-save-edit").on("click", async () => {
+    $("#btn-save-edit").prop("disabled", true);
+    $("#btn-save-edit").removeAttr("data-bs-dismiss");
+
+    const modal_edit = bootstrap.Modal.getInstance($("#modal-edit"));
+
+    const output_id = $("#input-id-edit").val();
+    const output_shelf = $("#input-shelf-edit").val();
+    const output_title = $("#input-title-edit").val();
+    const output_category = $("#input-category-edit").val();
+    const output_author = $("#input-author-edit").val();
+
+    /* Requisição API Bibliorinda para editar livros */
+    url = "https://api-bibliorinda.onrender.com/updateBook";
+    resp = await fetch(url, {
+        method: "PUT",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ id: output_id, shelf: output_shelf, title: output_title, category: output_category, author: output_author }),
+    });
+    data = await resp.json();
+
+    if (!resp.ok) {
+        modal_edit.hide();
+        return warnsToRequests(data, "danger", "fa-solid fa-xmark me-2");
+    }
+
+    warnsToRequests(data, "success", "fa-solid fa-check-circle me-2");
+
+    /* Atualizando no cache */
+    const id = cacheBooks.findIndex((el) => el.id === valueBook["input-id-edit"])
+    cacheBooks[id].shelf = output_shelf;
+    cacheBooks[id].title = output_title;
+    cacheBooks[id].category = output_category;
+    cacheBooks[id].author = output_author;
+
+    $("#input-edit").val("");
+    $("#inputs-edit input").each((index, element) => {
+        $(element).val("");
+    });
+
+    reloadList("list-books", "warn-search");
 });
 
 /* 📅 -> ⛔ Evento: Botão de remover tudo da tabela de livros */
