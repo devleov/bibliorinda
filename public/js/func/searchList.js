@@ -16,14 +16,14 @@ async function searchBook(box, input, warn) {
     }).slice(0, 10)
 
     if (cacheBooks.length == 0) {
-        $(`#${warn}`).html('<i class="fa-solid fa-magnifying-glass-plus fs-5 me-2"></i> <p class="mb-0 fw-bold fs-4 text-dark d-inline">Não há livros por aqui..</p>')
+        $(`#${warn}`).html('<i class="fa-solid fa-magnifying-glass-plus fs-5 me-2"></i> <p class="mb-0 fw-bold fs-4 text-white d-inline">Não há livros por aqui..</p>')
         $(`#${warn}`).css("display", "block");
 
         return;
     }
 
     if (cacheBooks.length > 0 && data.length == 0) {
-        $(`#${warn}`).html('<i class="fa-solid fa-magnifying-glass-plus fs-5 me-2"></i> <p class="mb-0 fw-bold fs-4 text-dark d-inline">Não há livros com estas caracteríscas..</p>')
+        $(`#${warn}`).html('<i class="fa-solid fa-magnifying-glass-plus fs-5 me-2"></i> <p class="mb-0 fw-bold fs-4 text-white d-inline">Não há livros com estas caracteríscas..</p>')
         $(`#${warn}`).css("display", "block")
 
         return;

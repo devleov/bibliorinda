@@ -1,30 +1,43 @@
 <div class="p-5" style="min-height: 350px;">
-    <p class="h3 mb-3" style="font-family: Poppins">Olá, Débora! Boas vindas ao <span
-            class="h1 fw-bold fs-3 mb-0 text-dark"
-            style="letter-spacing: 5px; font-family: Montserrat: display: inline-block; font-size: clamp(0,625rem, 0,6237rem + 0,6689vw, 1rem);" >BIBLIORINDA</span>!</p>
+    <div class="d-flex justify-content-beetween mb-3">
+        <p class="h3 text-white" style="font-family: Poppins">Olá, Débora! Boas vindas ao
+            <span class="h1 fw-bold fs-3 mb-0 text-dark"
+                style="letter-spacing: 5px; font-family: Montserrat: display: inline-block; font-size: clamp(0,625rem, 0,6237rem + 0,6689vw, 1rem);">BIBLIORINDA</span>!
+        </p>
+
+        <div class="ms-auto">
+            <button class="btn btn-warning" tabindex="-1" type="button" id="btn-truncate-list"><i
+                    class="fas fa-exclamation-circle me-2" style="color: black"></i> Truncar</button>
+
+            <button tabindex="-1" class="btn btn-danger" onclick="logout()">
+                <i class="fa-solid fa-power-off me-2"></i> Deslogar
+            </button>
+        </div>
+    </div>
+
     <div class="d-flex gap-3 mb-5 flex-wrap">
-        <button class="btn btn-primary" tabindex="-1" data-bs-target="#modal-add" data-bs-toggle="modal"
+        <button class="btn btn-success" tabindex="-1" data-bs-target="#modal-add" data-bs-toggle="modal"
             id="btn-add-book"><i class="fa-solid fa-book-medical me-2"></i> Adicionar novo livro</button>
 
-        <button class="btn btn-secondary" tabindex="-1" data-bs-target="#modal-remove" data-bs-toggle="modal"
+        <button class="btn btn-danger" tabindex="-1" data-bs-target="#modal-remove" data-bs-toggle="modal"
             id="btn-remove-book"><i class="fa-solid fa-trash me-2"></i> Remover livro</button>
 
         <button class="btn btn-secondary" tabindex="-1" data-bs-toggle="modal" data-bs-target="#modal-edit"
             type="button" id="btn-edit-book"><i class="fas fa-edit me-2"></i> Editar livro</button>
 
+
         <button class="btn btn-info" tabindex="-1" type="button" id="btn-reload-list"><i
                 class="fa-solid fa-rotate-right me-2"></i>
             Atualizar livros</button>
 
-        <button class="btn btn-warning" tabindex="-1" type="button" id="btn-truncate-list"><i
-                class="fas fa-exclamation-circle me-2"></i> Truncar</button>
-
-        <button tabindex="-1" class="ms-auto btn btn-danger" onclick="logout()">
-            <i class="fa-solid fa-power-off me-2"></i> Deslogar
+        <button class="ms-auto btn btn-outline-light" tabindex="-1" type="button" data-bs-toggle="modal"
+            data-bs-target="#modal-external">
+            <i class="fas fa-search-plus me-2" style="color: #ff8800;"></i> Buscar Externo
         </button>
     </div>
 
-    <label class="form-label fs-5" for="input-search">Pesquise por nome, prateleira, ator ou categoria:</label>
+
+    <label class="form-label fs-5 text-white" for="input-search">Pesquise por nome, prateleira, ator ou categoria:</label>
     <input autofocus autocomplete="off" type="text" class="form-control form-control-lg mb-4" placeholder="..."
         id="input-search">
 
@@ -150,7 +163,7 @@
 
                     <div class="input-group">
                         <input class="form-control" id="input-edit" min="1" type="number" placeholder="...">
-                        <button id="btn-search-edit" class="btn btn-primary"><i class="fas fa-search me-2"></i>
+                        <button id="btn-search-edit" class="btn btn-primary" disabled><i class="fas fa-search me-2"></i>
                             Pesquisar</button>
                     </div>
 
@@ -198,6 +211,62 @@
                     <button id="btn-save-edit" class="btn btn-success"><i class="fa-solid fa-floppy-disk me-2"></i>
                         Salvar alterações</button>
 
+                    <button class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-solid fa-xmark me-2"></i>
+                        Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de buscar livros no externo -->
+    <div class="modal fade" tabindex="-1" id="modal-external">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header flex-column">
+                    <p class="h2 text-center">Procure livros em outras bibliotecas..</p>
+                    <p class="h5">Selecione como quer pesquisar</p>
+                </div>
+
+                <div class="p-4">
+                    <label for="select-search-external">Tipo da pesquisa:</label>
+                    <select id="select-search-external" class="form-select mb-2">
+                        <option value="" disabled selected>Pesquisar pelo..</option>
+                        <option value="title">Título</option>
+                        <option value="author">Autor</option>
+                        <option value="q">Título e Autor</option>
+                    </select>
+
+                    <label for="input-search-external">Pesquisar:</label>
+                    <div class="input-group">
+                        <input id="input-search-external" type="text" class="form-control"
+                            placeholder="Insira o valor da pesquisa" disabled>
+                        <button id="btn-search-external" class="btn btn-primary" disabled><i
+                                class="fas fa-search me-2"></i> Pesquisar</button>
+                    </div>
+
+                    <div class="table-responsive mt-4" style="max-height: 216px; overflow-y: auto;">
+                        <table class="table table-dark table-striped w-100">
+                            <thead>
+                                <tr>
+                                    <td class="w-50">Título</td>
+                                    <td class="w-50">Autor</td>
+                                    <td></td>
+                                </tr>
+                            </thead>
+
+                            <tbody id="list-external"></tbody>
+                        </table>
+                    </div>
+
+                    <div id="warn-external" style="display: none;">
+                        <p class="mb-0 fw-bold fs-4 text-dark">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> Não achei livros com essas
+                            características.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
                     <button class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-solid fa-xmark me-2"></i>
                         Fechar</button>
                 </div>

@@ -19,8 +19,8 @@ $("#input-search")
 $("#warn-search").show();
 $("#warn-search").html(`
     <div class="p-2 d-flex align-items-center">
-        <div class="spinner-border me-2" role="status"></div>
-        <span class="text-dark fs-5 fw-bold">Carregando lista...</span>
+        <div class="spinner-border me-2 text-white" role="status"></div>
+        <span class="text-white fs-5 fw-bold">Carregando lista...</span>
     </div>
 `);
 
@@ -94,16 +94,7 @@ async function addBook() {
     /* Obtenção dos dados do modal de adicionar livro */
     const { shelf, title, category, author } = getDataFormAddBook();
 
-    /* Filtragem por elementos que possuem conteúdo vazio */
-    const inputsEmpty = $("#modal-add input").filter((_, el) => { return el.value.trim() == ""; });
-
-    /* Itera sobre os campos vazios */
-    inputsEmpty.each((_, el) => {
-        $(el).addClass("is-invalid")
-        $(el).removeClass("is-valid")
-    })
-
-    if (!shelf || !title || !author || !category) return;
+    if (!title || !author || !category) return;
 
     /* Requisição API Bibliorinda para adicionar um livro */
     url = "https://api-bibliorinda.onrender.com/createBook";
@@ -167,8 +158,11 @@ $("#modal-add input").each((_, el) => {
             $(el).removeClass("is-valid")
         }
 
+        $("#input-shelf").addClass("is-valid");
+        $("#input-shelf").removeClass("is-invalid");
+
         /* Fazer verificação se o `shelf` tem número na segunda caracter, se tiver passar, se não tiver avisar a estrutura correta */
-        if (!isNaN(shelf.charAt(0)) || isNaN(shelf.charAt(1)) || shelf.length < 2 || shelf.length > 2) {
+        if (!isNaN(shelf.charAt(0)) && shelf.length > 0 || isNaN(shelf.charAt(1)) && shelf.length > 0) {
             $(".shelf-invalid-feedback").text("A estrutura prateleira correta ex: A1");
             $("#input-shelf").addClass("is-invalid")
             $("#input-shelf").removeClass("is-valid")
@@ -181,7 +175,7 @@ $("#modal-add input").each((_, el) => {
         }
 
         /* Condição: Se todos os campos obrigatórios terem conteúdo permitir o uso do botão com o efeito de fechamento dos modais */
-        if (shelf && title && author && category) {
+        if (title && author && category) {
             $("#btn-save-book").prop("disabled", false)
             $("#btn-save-book").attr("data-bs-dismiss", "modal");
         }
@@ -195,7 +189,7 @@ $("#modal-add").on("keypress", (e) => {
         $("#btn-save-book").prop("disabled", true);
 
         const modal_add = bootstrap.Modal.getInstance($("#modal-add"));
-        const { shelf, title, category, author } = getDataFormAddBook();
+        const { title, category, author } = getDataFormAddBook();
 
         /* Verificar quais campos estão vazios e adicionar inválido neles */
 
@@ -209,7 +203,7 @@ $("#modal-add").on("keypress", (e) => {
         })
 
         /* Fechar modal de adicionamento de livros se tiver todos os campos preenchidos */
-        if (shelf && title && author && category) {
+        if (title && author && category) {
             addBook();
 
             /* Simula o fechamento do modal */
@@ -356,6 +350,13 @@ $("#btn-edit-book").on("click", () => {
     $("#warn-edit").hide();
 });
 
+/* 📅 -> 📝 Evento: Alteração no campo de colocar o ID */
+$("#input-edit").on("input", function () {
+    if ($(this).val()) return $("#btn-search-edit").prop("disabled", false);
+
+    $("#btn-search-edit").prop("disabled", true);
+})
+
 /* 📅 -> 📝 Evento: Clique para o botão de pesquisar ID para edição */
 $("#btn-search-edit").on("click", () => {
     $("#warn-edit").hide();
@@ -475,6 +476,64 @@ $("#btn-save-edit").on("click", async () => {
 
     reloadList("list-books", "warn-search");
 });
+
+/* 📅 -> 🏦 Evento: Alteração no tipo de pesquisa de pesquisar na api externa */
+$("#select-search-external").on("change", () => {
+    $("#input-search-external").prop("disabled", false);
+});
+
+/* 📅 -> 🏦 Evento: Alteração no campo de pesquisa de pesquisar na api externa */
+$("#input-search-external").on("change", () => {
+    if (!$("#input-search-external").val()) return $("#btn-search-external").prop("disabled", true);
+
+    $("#btn-search-external").prop("disabled", false);
+});
+
+/* Evento: Clique no botão de pesquisar livro na api externa */
+$("#btn-search-external").on("click", async () => {
+    const typeSearch = $("#select-search-external").val();
+    const valueSearch = $("#input-search-external").val();
+
+    /* Requisição API OpenLibrary para os livros */
+    const endpoint = new URL(`https://openlibrary.org/search.json?${typeSearch}=${valueSearch}&lang=pt&limit=50`);
+    resp = await fetch(endpoint, {
+        method: "GET",
+        headers: { "User-Agent": "Bibliorinda/1.0 (leonarzy@gmail.com)" },
+    });
+    data = await resp.json();
+
+    $("#list-external").html("");
+    $("#warn-external").css("display", "none");
+
+    if (data.docs.length === 0) {
+        return $("#warn-external").css("display", "block");
+    }
+
+    const dataFiltred = await data.docs.filter((book) => book.language && book.language.includes("por")).slice(0, 10);
+
+    const valueData = [];
+
+    for (let i = 0; i < dataFiltred.length; i++) {
+        valueData.push({
+            title: dataFiltred[i].title,
+            author: dataFiltred[i].author_name > 1 ? dataFiltred[i].author_name.join(" e ") : dataFiltred[i].author_name[0],
+        });
+    };
+
+    let text = "";
+
+    $(valueData).each((_, el) => {
+        text += `
+            <tr>
+                <td class="w-50">${el.title}</td>
+                <td>${el.author}</td>
+                <td><button class="btn btn-outline-secondary p-2"><i class="fa-solid fa-plus"></i></button></td>
+            </tr>
+        `;
+    })
+
+    $("#list-external").html(text)
+})
 
 /* 📅 -> ⛔ Evento: Botão de remover tudo da tabela de livros */
 $("#btn-truncate-list").on("click", async () => {
