@@ -225,7 +225,7 @@ $("#btn-remove-book").on("click", () => {
     $("#warn-remove").css("display", "none")
 
     if (cacheBooks.length === 0) {
-        $("#warn-remove").html('<i class="fa-solid fa-magnifying-glass-plus fs-5 me-2"></i> <p class="mb-0 fw-bold fs-4 text-dark d-inline">Não há livros por aqui..</p>')
+        $("#warn-remove").html('<p class="mb-0 fw-bold fs-4 text-dark">Não há livros por aqui..</p>')
         $("#warn-remove").css("display", "block");
 
         return;

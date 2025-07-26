@@ -11,7 +11,7 @@ async function loadList(warn) {
     const arrayBook = await getCacheAllBooks();
 
     if (arrayBook.length == 0) {
-        $(`#${warn}`).html('<i class="fa-solid fa-magnifying-glass-plus fs-5 me-2"></i> <p class="mb-0 fw-bold fs-4 text-white d-inline">Não há livros por aqui..</p>')
+        $(`#${warn}`).html('<p class="mb-0 fw-bold fs-4 text-white">Não há livros por aqui..</p>')
         $(`#${warn}`).css("display", "block");
 
         return;
