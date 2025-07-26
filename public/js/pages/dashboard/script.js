@@ -241,7 +241,7 @@ $("#btn-remove-book").on("click", () => {
                 <td>${element.author}</td>
                 
                 <td>
-                    <button data-ba-id="${element.id}" class="btn-remove-item btn btn-danger">Remover</button>
+                    <button data-ba-id="${element.id}" class="btn-remove-item btn btn-outline-secondary p-2"><i class="fa-solid fa-xmark"></i></button>
                 </td>
             </tr>
         `;
@@ -456,6 +456,11 @@ $("#btn-save-edit").on("click", async () => {
     data = await resp.json();
 
     if (!resp.ok) {
+        $("#input-edit").val("");
+        $("#inputs-edit input").each((index, element) => {
+            $(element).val("");
+        });
+
         modal_edit.hide();
         return warnsToRequests(data, "danger", "fa-solid fa-xmark me-2");
     }

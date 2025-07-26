@@ -26,7 +26,7 @@ async function reloadList(box, warn) {
                 <td>${element.author}</td>
                 
                 <td>
-                    <button data-ba-id="${element.id}" class="btn-remove-item btn btn-danger">Remover</button>
+                    <button data-ba-id="${element.id}" class="btn-remove-item btn btn-outline-secondary p-2"><i class="fa-solid fa-xmark"></i></button>
                 </td>
             </tr>
         `;
