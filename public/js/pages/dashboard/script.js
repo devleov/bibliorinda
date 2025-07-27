@@ -184,8 +184,6 @@ $("#modal-add input").each((_, el) => {
 
         /* Condição: Se todos os campos obrigatórios terem conteúdo permitir o uso do botão com o efeito de fechamento dos modais */
         if (title && author && category) {
-            console.log("ta disparando errado em")
-
             $("#btn-save-book").prop("disabled", false)
             $("#btn-save-book").attr("data-bs-dismiss", "modal");
         }
@@ -413,7 +411,7 @@ $("#inputs-edit input").on("blur", () => {
         if (hasChange) return;
 
         if (currentValue.id === "input-shelf-edit") {
-            if (!isNaN($(currentValue).val().charAt(0)) || isNaN($(currentValue).val().charAt(1)) || $(currentValue).val().length < 2 || $(currentValue).val().length > 2) {
+            if (!isNaN($(currentValue).val().charAt(0)) && $(currentValue).val().length > 0 || isNaN($(currentValue).val().charAt(1)) && $(currentValue).val().length > 0 || $(currentValue).val().length > 0 && $(currentValue).val().length < 2) {
                 $(".shelf-edit-invalid-feedback").text("A estrutura prateleira correta ex: A1");
                 $("#input-shelf-edit").addClass("is-invalid")
                 $("#input-shelf-edit").removeClass("is-valid")
