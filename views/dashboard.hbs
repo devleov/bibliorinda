@@ -1,7 +1,7 @@
 <div class="p-5" style="min-height: 350px;">
     <div class="d-flex justify-content-beetween mb-3">
-        <p class="h3 text-white" style="font-family: Poppins">Olá, Débora! Boas vindas ao
-            <span class="h1 fw-bold fs-3 mb-0 text-dark"
+        <p class="h3" style="font-family: Poppins">Olá, Débora! Boas vindas ao
+            <span class="h1 fw-bold fs-3 mb-0"
                 style="letter-spacing: 5px; font-family: Montserrat: display: inline-block; font-size: clamp(0,625rem, 0,6237rem + 0,6689vw, 1rem);">BIBLIORINDA</span>!
         </p>
 
@@ -27,17 +27,17 @@
 
 
         <button class="btn btn-info" tabindex="-1" type="button" id="btn-reload-list"><i
-                class="fa-solid fa-rotate-right me-2"></i>
+                class="fa-solid text-white fa-rotate-right me-2"></i>
             Atualizar livros</button>
 
-        <button class="ms-auto btn btn-outline-light" tabindex="-1" type="button" data-bs-toggle="modal"
+        <button class="ms-auto btn btn-outline-dark" tabindex="-1" type="button" data-bs-toggle="modal"
             data-bs-target="#modal-external">
             <i class="fas fa-search-plus me-2" style="color: #ff8800;"></i> Buscar Externo
         </button>
     </div>
 
 
-    <label class="form-label fs-5 text-white" for="input-search">Pesquise por nome, prateleira, ator ou
+    <label class="form-label fs-5" for="input-search">Pesquise por nome, prateleira, ator ou
         categoria:</label>
     <input autofocus autocomplete="off" type="text" class="form-control form-control-lg mb-4" placeholder="..."
         id="input-search">
@@ -71,15 +71,15 @@
 
                 <div class="modal-body d-flex gap-2 flex-column">
                     <div>
-                        <input id="input-shelf" class="form-control" type="text"
-                            placeholder="* Insira a prateleira do livro">
+                        <input autocomplete="off" id="input-shelf" class="form-control" type="text"
+                            placeholder="Insira a prateleira do livro">
                         <span class="mt-0 shelf-invalid-feedback invalid-feedback"></span>
                     </div>
 
-                    <input id="input-name" class="form-control" type="text" placeholder="* Insira o nome do livro">
-                    <input id="input-category" class="form-control" type="text"
+                    <input autocomplete="off" id="input-name" class="form-control" type="text" placeholder="* Insira o nome do livro">
+                    <input autocomplete="off" id="input-category" class="form-control" type="text"
                         placeholder="* Insira a categoria do livro">
-                    <input id="input-author" class="form-control" type="text" placeholder="* Insira o nome do autor">
+                    <input autocomplete="off" id="input-author" class="form-control" type="text" placeholder="* Insira o nome do autor">
                 </div>
 
                 <div class="modal-footer">
@@ -258,6 +258,8 @@
                 </div>
 
                 <div class="modal-footer">
+                    <button id="btn-clean-external" class="btn btn-secondary me-auto"><i class="fa-solid fa-trash me-2"></i> Limpar</button>
+
                     <button class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-solid fa-xmark me-2"></i>
                         Fechar</button>
                 </div>

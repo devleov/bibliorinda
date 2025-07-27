@@ -19,8 +19,8 @@ $("#input-search")
 $("#warn-search").show();
 $("#warn-search").html(`
     <div class="p-2 d-flex align-items-center">
-        <div class="spinner-border me-2 text-white" role="status"></div>
-        <span class="text-white fs-5 fw-bold">Carregando lista...</span>
+        <div class="spinner-border me-2" role="status"></div>
+        <span class="fs-5 fw-bold">Carregando lista...</span>
     </div>
 `);
 
@@ -89,7 +89,7 @@ $("#btn-save-book").prop("disabled", true);
 /* ➕ Função: Adicionar livro */
 async function addBook() {
     /* Remover atributo do botão de adicionar livro */
-    $("#btn-save-book").removeAttr("data-bs-dismiss")
+    $("#btn-save-book").removeAttr("data-bs-dismiss");
 
     /* Obtenção dos dados do modal de adicionar livro */
     const { shelf, title, category, author } = getDataFormAddBook();
@@ -143,23 +143,31 @@ $("#btn-save-book").on("click", async () => {
     addBook();
 });
 
+/* 📅 -> ➕ Evento: Abertura de modal de adicionamento de livro */
+$("#modal-add").on("shown.bs.modal", () => {
+    $("#input-shelf").removeClass("is-invalid");
+    $("#input-shelf").addClass("is-valid");
+});
+
 /* 📅 -> ➕ Evento: Alteração nos inputs do modal de adicionamento de livro */
 $("#modal-add input").each((_, el) => {
     $(el).on("change", function () {
         const { shelf, title, category, author } = getDataFormAddBook();
 
-        /* Condição: Se o campo NÃO estiver vazio */
-        if ($(el).val().trim() !== "") {
-            $(el).addClass("is-valid")
-            $(el).removeClass("is-invalid")
+        if (el.id === "input-shelf") {
+            $("#input-shelf").addClass("is-valid");
+            $("#input-shelf").removeClass("is-invalid");
         } else {
-            /* Condição: Se o campo ESTIVER vazio */
-            $(el).addClass("is-invalid")
-            $(el).removeClass("is-valid")
+            /* Condição: Se o campo NÃO estiver vazio */
+            if ($(el).val().trim() !== "") {
+                $(el).addClass("is-valid")
+                $(el).removeClass("is-invalid")
+            } else {
+                /* Condição: Se o campo ESTIVER vazio */
+                $(el).addClass("is-invalid")
+                $(el).removeClass("is-valid")
+            }
         }
-
-        $("#input-shelf").addClass("is-valid");
-        $("#input-shelf").removeClass("is-invalid");
 
         /* Fazer verificação se o `shelf` tem número na segunda caracter, se tiver passar, se não tiver avisar a estrutura correta */
         if (!isNaN(shelf.charAt(0)) && shelf.length > 0 || isNaN(shelf.charAt(1)) && shelf.length > 0) {
@@ -176,6 +184,8 @@ $("#modal-add input").each((_, el) => {
 
         /* Condição: Se todos os campos obrigatórios terem conteúdo permitir o uso do botão com o efeito de fechamento dos modais */
         if (title && author && category) {
+            console.log("ta disparando errado em")
+
             $("#btn-save-book").prop("disabled", false)
             $("#btn-save-book").attr("data-bs-dismiss", "modal");
         }
@@ -225,7 +235,7 @@ $("#btn-remove-book").on("click", () => {
     $("#warn-remove").css("display", "none")
 
     if (cacheBooks.length === 0) {
-        $("#warn-remove").html('<p class="mb-0 fw-bold fs-4 text-dark">Não há livros por aqui..</p>')
+        $("#warn-remove").html('<p class="mb-0 fw-bold fs-4">Não há livros por aqui..</p>')
         $("#warn-remove").css("display", "block");
 
         return;
@@ -482,6 +492,8 @@ $("#btn-save-edit").on("click", async () => {
     reloadList("list-books", "warn-search");
 });
 
+$("#btn-clean-external").prop("disabled", true);
+
 /* 📅 -> 🏦 Evento: Alteração no tipo de pesquisa de pesquisar na api externa */
 $("#select-search-external").on("change", () => {
     $("#input-search-external").prop("disabled", false);
@@ -500,7 +512,7 @@ $("#btn-search-external").on("click", async () => {
     const valueSearch = $("#input-search-external").val();
 
     /* Requisição API OpenLibrary para os livros */
-    const endpoint = new URL(`https://openlibrary.org/search.json?${typeSearch}=${valueSearch}&lang=pt&limit=50`);
+    const endpoint = new URL(`https://openlibrary.org/search.json?${typeSearch}=${valueSearch}&lang=pt&limit=10`);
     resp = await fetch(endpoint, {
         method: "GET",
         headers: { "User-Agent": "Bibliorinda/1.0 (leonarzy@gmail.com)" },
@@ -510,11 +522,13 @@ $("#btn-search-external").on("click", async () => {
     $("#list-external").html("");
     $("#warn-external").css("display", "none");
 
-    if (data.docs.length === 0) {
-        return $("#warn-external").css("display", "block");
-    }
+    $("#btn-clean-external").prop("disabled", false);
 
     const dataFiltred = await data.docs.filter((book) => book.language && book.language.includes("por")).slice(0, 10);
+
+    if (data.docs.length === 0 || dataFiltred.length === 0) {
+        return $("#warn-external").css("display", "block");
+    }
 
     const valueData = [];
 
@@ -532,13 +546,44 @@ $("#btn-search-external").on("click", async () => {
             <tr>
                 <td class="w-50">${el.title}</td>
                 <td>${el.author}</td>
-                <td><button class="btn btn-outline-secondary p-2"><i class="fa-solid fa-plus"></i></button></td>
+                <td><button class="btn-add-external btn btn-outline-secondary p-2"><i class="fa-solid fa-plus"></i></button></td>
             </tr>
         `;
     })
 
     $("#list-external").html(text)
-})
+});
+
+$("#modal-external").on("click", ".btn-add-external", function () {
+    const ancestral = this.closest("tr");
+    const childrens = ancestral.children;
+
+    const modal_external = bootstrap.Modal.getInstance($("#modal-external"));
+    modal_external.hide();
+
+    const title = $(childrens[0]).text();
+    const author = $(childrens[1]).text();
+
+    const modal_add = new bootstrap.Modal($("#modal-add")) || bootstrap.Modal.getInstance($("#modal-add"));
+    modal_add.show();
+
+    $("#input-name").val(title);
+    $("#input-author").val(author);
+
+    $("#input-name").removeClass("is-invalid");
+    $("#input-name").addClass("is-valid");
+    $("#input-author").removeClass("is-invalid");
+    $("#input-author").addClass("is-valid");
+});
+
+$("#btn-clean-external").on("click", () => {
+    $("#input-search-external").val("");
+    $("#select-search-external").val("");
+    $("#btn-clean-external").prop("disabled", true);
+    $("#btn-search-external").prop("disabled", true);
+    $("#list-external").html("");
+});
+
 
 /* 📅 -> ⛔ Evento: Botão de remover tudo da tabela de livros */
 $("#btn-truncate-list").on("click", async () => {
