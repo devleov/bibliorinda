@@ -144,9 +144,10 @@ $("#btn-save-book").on("click", async () => {
 });
 
 /* 📅 -> ➕ Evento: Abertura de modal de adicionamento de livro */
-$("#modal-add").on("shown.bs.modal", () => {
+$("#modal-add").on("shown.bs.modal", function () {
     $("#input-shelf").removeClass("is-invalid");
     $("#input-shelf").addClass("is-valid");
+    $("#input-shelf").val("");
 });
 
 /* 📅 -> ➕ Evento: Alteração nos inputs do modal de adicionamento de livro */
@@ -170,7 +171,7 @@ $("#modal-add input").each((_, el) => {
         }
 
         /* Fazer verificação se o `shelf` tem número na segunda caracter, se tiver passar, se não tiver avisar a estrutura correta */
-        if (!isNaN(shelf.charAt(0)) && shelf.length > 0 || isNaN(shelf.charAt(1)) && shelf.length > 0) {
+        if (!isNaN(shelf.charAt(0)) && shelf.length > 0 || shelf.length > 0 && shelf.length < 2 || isNaN(shelf.charAt(1)) && shelf.length > 0) {
             $(".shelf-invalid-feedback").text("A estrutura prateleira correta ex: A1");
             $("#input-shelf").addClass("is-invalid")
             $("#input-shelf").removeClass("is-valid")
@@ -449,7 +450,7 @@ $("#btn-save-edit").on("click", async () => {
     const modal_edit = bootstrap.Modal.getInstance($("#modal-edit"));
 
     const output_id = $("#input-id-edit").val();
-    const output_shelf = $("#input-shelf-edit").val();
+    const output_shelf = $("#input-shelf-edit").val().trim().charAt(0).toUpperCase() + $("#input-shelf-edit").val().slice(1);
     const output_title = $("#input-title-edit").val();
     const output_category = $("#input-category-edit").val();
     const output_author = $("#input-author-edit").val();
@@ -604,6 +605,11 @@ $("#btn-truncate-list").on("click", async () => {
     cacheBooks = [];
 
     reloadList("list-books");
+});
+
+/* ⛔👋 Evita erro de bloqueio de aria-hidden */
+$("#modal-add, #modal-remove, #modal-edit, #modal-external").on("shown.bs.modal", function() {
+    $(this).trigger("focus");
 });
 
 /* 📅 -> 🔃 Evento: Reatualizar a lista */
