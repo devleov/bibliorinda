@@ -1,18 +1,12 @@
-<div class="p-5" style="min-height: 350px;">
-    <div class="d-flex justify-content-beetween mb-3">
+<div class="content-dashboard" style="min-height: 350px;">
+    <div class="d-flex flex-wrap gap-2 justify-content-beetween mb-3">
         <p class="h3" style="font-family: Poppins">Olá, Débora! Boas vindas ao
             <span class="h1 fw-bold fs-3 mb-0"
                 style="letter-spacing: 5px; font-family: Montserrat: display: inline-block; font-size: clamp(0,625rem, 0,6237rem + 0,6689vw, 1rem);">BIBLIORINDA</span>!
         </p>
 
-        <div class="ms-auto">
-            <button class="btn btn-warning" tabindex="-1" type="button" id="btn-truncate-list"><i
-                    class="fas fa-exclamation-circle me-2" style="color: black"></i> Truncar</button>
-
-            <button tabindex="-1" class="btn btn-danger" onclick="logout()">
-                <i class="fa-solid fa-power-off me-2"></i> Deslogar
-            </button>
-        </div>
+            {{!-- <button class="btn btn-warning" tabindex="-1" type="button" id="btn-truncate-list"><i
+                    class="fas fa-exclamation-circle me-2" style="color: black"></i> Truncar</button> --}}
     </div>
 
     <div class="d-flex gap-3 mb-5 flex-wrap">
@@ -30,9 +24,13 @@
                 class="fa-solid text-white fa-rotate-right me-2"></i>
             Atualizar livros</button>
 
-        <button class="ms-auto btn btn-outline-dark" tabindex="-1" type="button" data-bs-toggle="modal"
+        <button class="btn btn-outline-dark" tabindex="-1" type="button" data-bs-toggle="modal"
             data-bs-target="#modal-external">
             <i class="fas fa-search-plus me-2" style="color: #ff8800;"></i> Buscar Externo
+        </button>
+
+        <button tabindex="-1" class="ms-auto btn btn-danger" onclick="logout()">
+            <i class="fa-solid fa-power-off me-2"></i> Deslogar
         </button>
     </div>
 
@@ -76,10 +74,12 @@
                         <span class="mt-0 shelf-invalid-feedback invalid-feedback"></span>
                     </div>
 
-                    <input autocomplete="off" id="input-name" class="form-control" type="text" placeholder="* Insira o nome do livro">
+                    <input autocomplete="off" id="input-name" class="form-control" type="text"
+                        placeholder="* Insira o nome do livro">
                     <input autocomplete="off" id="input-category" class="form-control" type="text"
                         placeholder="* Insira a categoria do livro">
-                    <input autocomplete="off" id="input-author" class="form-control" type="text" placeholder="* Insira o nome do autor">
+                    <input autocomplete="off" id="input-author" class="form-control" type="text"
+                        placeholder="* Insira o nome do autor">
                 </div>
 
                 <div class="modal-footer">
@@ -258,7 +258,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button id="btn-clean-external" class="btn btn-secondary me-auto"><i class="fa-solid fa-trash me-2"></i> Limpar</button>
+                    <button id="btn-clean-external" class="btn btn-secondary me-auto"><i
+                            class="fa-solid fa-trash me-2"></i> Limpar</button>
 
                     <button class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-solid fa-xmark me-2"></i>
                         Fechar</button>

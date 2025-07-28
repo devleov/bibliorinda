@@ -614,5 +614,11 @@ $("#modal-add, #modal-remove, #modal-edit, #modal-external").on("shown.bs.modal"
 
 /* 📅 -> 🔃 Evento: Reatualizar a lista */
 $("#btn-reload-list").on("click", () => {
+    data = {
+        message: "Tabela atualizada com sucesso!"
+    };
+
+    warnsToRequests(data, "success", "fa-solid fa-check-circle me-2");
+
     reloadList("list-books", "warn-search")
 });
